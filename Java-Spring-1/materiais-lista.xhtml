@@ -1,0 +1,173 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:p="http://primefaces.org/ui">
+	<style type="text/css">
+.m-datatable .m-datatable--default .m-datatable--brand .m-datatable--loaded
+	{
+	margin-left: 30px;
+	margin-right: 30px
+}
+
+.m-datatable.m-datatable--default>.m-datatable__pager {
+	margin-left: 30px;
+	margin-right: 30px
+}
+
+.modal-content .m--font-brand {
+	color: white !important
+}
+
+.m-datatable__table {
+	padding-bottom: 125px
+}
+
+#html_table {
+	overflow: hidden !important;
+}
+</style>
+	<f:metadata>
+		<f:event listener="#{materialController.initList}"
+			type="preRenderView" />
+	</f:metadata>
+
+	<div class="m-grid__item m-grid__item--fluid m-wrapper">
+		<!-- BEGIN: Subheader -->
+		<div class="m-subheader ">
+			<div class="d-flex align-items-center">
+				<div class="mr-auto">
+					<h3 class="m-subheader__title m-subheader__title--separator">
+						Materiais</h3>
+					<ul class="m-subheader__breadcrumbs m-nav m-nav--inline">
+						<li class="m-nav__item m-nav__item--home"><i
+							class="m-nav__link-icon la la-home"></i></li>
+						<li class="m-nav__separator">-</li>
+						<li class="m-nav__item"><span class="m-nav__link-text">
+								Materiais </span></li>
+						<li class="m-nav__separator">-</li>
+						<li class="m-nav__item"><span class="m-nav__link-text">
+								Lista de Materiais </span></li>
+					</ul>
+				</div>
+
+			</div>
+		</div>
+		<!-- END: Subheader -->
+		<div class="m-content">
+
+			<div class="m-portlet m-portlet--tab">
+
+				<!--begin::Form-->
+				<div class="m-form m-form--fit m-form--label-align-right">
+					<div class="m-portlet__body">
+						<!--begin: Search Form -->
+						<div
+							class="m-form m-form--label-align-right m--margin-top-20 m--margin-bottom-30 m--margin-left-20">
+							<div class="row align-items-center">
+								<div class="col-xl-8 order-2 order-xl-1">
+									<div class="form-group m-form__group row align-items-center"
+										style="padding-left: 15px">
+
+										<div class="col-md-4">
+											<div class="m-input-icon m-input-icon--left">
+												<input type="text" class="form-control m-input"
+													placeholder="Search..." id="generalSearch" /><span
+													class="m-input-icon__icon m-input-icon__icon--left">
+													<span> <i class="la la-search" />
+												</span>
+												</span>
+											</div>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+						<!--end: Search Form -->
+						<!--begin: Datatable -->
+						<table class="m-datatable" id="html_table" width="100%"
+							style="margin-left: 30px; /* Firefox */ width: -moz-calc(100% - 60px);
+	/* WebKit */ width: -webkit-calc(100% - 60px);
+	/* Opera */ width: -o-calc(100% - 60px);
+	/* Standard */ width: calc(100% - 60px);">
+							<thead>
+								<tr>
+									<th title="Field #1">Tipo Material</th>
+									<th title="Field #2">Marca</th>
+									<th title="Field #3">Quantidade</th>
+									<th title="Field #4">Custo</th>
+									<th title="Field #4">Caracteristica</th>
+									<th title="Field #5">Opções</th>
+								</tr>
+							</thead>
+							<tbody>
+								<c:forEach items="#{materialController.tabelaDados}"
+									var="material" varStatus="mat">
+									<tr>
+										<td><h:outputLabel value="#{material.tipoMaterial.nome}" />
+										</td>
+										<td><h:outputLabel value="#{material.marca}" />
+										</td>
+										<td><h:outputLabel value="#{material.quantidade}" /></td>
+										<td>R$ <h:outputLabel value="#{material.valorCusto}"
+												converter="ValorMonetarioConverter" />
+										</td>
+										<td>
+											<div class="m-list-badge m-list-badge--light-bg">
+												<c:forEach items="#{material.listaCaractMaterial}"
+													var="carac">
+													 <div class="m-list-badge__items">
+				                                        <a href="#" class="m-list-badge__item" title="#{carac.descricao}">#{carac.tipoCaracteristicaMaterial.nome}</a>
+				                                    </div>
+												</c:forEach>
+											</div>
+										</td>
+							
+									<td>
+										<div>
+										<p:commandLink title="Editar" style="margin-right: 5px"
+											immediate="true" ajax="false" href="#"
+											actionListener="#{materialController.doEditAction}"
+											class="m-portlet__nav-link btn btn-lg m-btn--hover-accent  m-btn m-btn--icon m-btn--icon-only m-btn--pill  m-dropdown__toggle">
+											<i class="la la-edit m--font-brand"></i>
+											<f:setPropertyActionListener value="#{material}"
+												target="#{materialController.bean}" />
+										</p:commandLink>
+
+										<p:commandLink title="Excluir" ajax="true"
+											onclick="confirmarExclusaoDoRegistro(#{mat.index})"
+											process="@this"
+											class="m-portlet__nav-link btn btn-lg m-btn--hover-danger  m-btn m-btn--icon m-btn--icon-only m-btn--pill  m-dropdown__toggle">
+											<i class="la la-trash m--font-brand"></i>
+											<f:setPropertyActionListener value="#{material}"
+												target="#{materialController.bean}" />
+										</p:commandLink>
+
+										<p:remoteCommand id="excluirRegistro" name="excluirRegistro"
+											action="#{materialController.doDeleteAction}" update="@this"
+											oncomplete="showMensagem(xhr, status, args);" process="@this"></p:remoteCommand>
+
+									</div>
+								</td>
+								</tr>
+								</c:forEach>
+							</tbody>
+						</table>
+					
+					
+					
+					
+					
+					
+					
+					</div>
+				</div>
+			</div>
+
+
+		</div>
+	</div>
+
+
+</ui:composition>
