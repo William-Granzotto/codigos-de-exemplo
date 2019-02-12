@@ -1,0 +1,293 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:p="http://primefaces.org/ui">
+
+	<style type="text/css">
+.m-datatable .m-datatable--default .m-datatable--brand .m-datatable--loaded
+	{
+	margin-left: 30px;
+	margin-right: 30px
+}
+
+.m-datatable.m-datatable--default>.m-datatable__pager {
+	margin-left: 30px;
+	margin-right: 30px
+}
+
+.dropdown {
+	position: relative;
+	display: inline-block;
+}
+
+.dropdown-content {
+	display: none;
+	position: absolute;
+	background-color: #f9f9f9;
+	min-width: 160px;
+	box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
+	padding: 12px 16px;
+	z-index: 1;
+}
+
+.dropdown:hover .dropdown-content {
+	display: block;
+}
+
+#pntabela {
+	overflow: hidden !important;
+	display: block !important;
+}
+
+.ui-state-highlight {
+	border : 3px solid #156090 !important;
+	background : none !important;
+}
+
+.modelInput {
+	height: 75px !important;
+	border: none !important;
+}
+
+</style>
+
+	<div class="modal fade" id="myModalTipoMaterial" tabindex="-1"
+		role="dialog" aria-labelledby="myModal" aria-hidden="true"
+		data-keyboard="false" data-backdrop="static">
+		<div class="modal-dialog modal-sm">
+			<div class="modal-content" style="width: 600px; margin-left: -300px">
+
+				<div class="modal-header">
+					<h4 class="modal-title">Novo Tipo de Material</h4>
+					<button aria-hidden="true" data-dismiss="modal" class="close"
+						type="button">×</button>
+				</div>
+				<h:panelGroup id="modal-group2">
+					<div class="modal-body" style="clear: both">
+						<div class="form-group m-form__group row">
+							<label for="lblmarca" class="col-6 col-form-label"> Tipo
+								Material </label>
+							<div class="col-12">
+								<h:inputText id="nomeTipoMaterial"
+									value="#{tipoMaterialController.bean.nome}"
+									styleClass="col-12 form-control m-input" />
+							</div>
+						</div>
+
+						<div class="modal-footer">
+							<p:commandLink styleClass="btn btn-secondary" value="Fechar">
+								<f:passThroughAttribute name="data-dismiss" value="modal" />
+							</p:commandLink>
+							<p:commandLink id="btnsalvartipomaterial"
+								oncomplete="showMensagem(xhr, status, args); configurarMoeda()"
+								process="@this, nomeTipoMaterial" ajax="true"
+								update="nomeTipoMaterial, paginas:tipoMaterial"
+								actionListener="#{tipoMaterialController.doSaveAction}"
+								action="#{materialController.atualizarListaTipoMateriais}"
+								styleClass="btn btn-success" style="float: right" value="Salvar"></p:commandLink>
+
+							<p:blockUI block="modal-group2" trigger="btnsalvartipomaterial" />
+						</div>
+					</div>
+				</h:panelGroup>
+
+			</div>
+		</div>
+	</div>
+
+	<div class="m-grid__item m-grid__item--fluid m-wrapper">
+		<!-- BEGIN: Subheader -->
+		<div class="m-subheader ">
+			<div class="d-flex align-items-center">
+				<div class="mr-auto">
+					<h3 class="m-subheader__title m-subheader__title--separator">
+						Materiais</h3>
+					<ul class="m-subheader__breadcrumbs m-nav m-nav--inline">
+						<li class="m-nav__item m-nav__item--home"><i
+							class="m-nav__link-icon la la-home"></i></li>
+						<li class="m-nav__separator">-</li>
+						<li class="m-nav__item"><span class="m-nav__link-text">
+								Materiais </span></li>
+						<li class="m-nav__separator">-</li>
+						<li class="m-nav__item"><span class="m-nav__link-text">
+								Novo Material </span></li>
+					</ul>
+				</div>
+			</div>
+		</div>
+		<!-- END: Subheader -->
+		<div class="m-content">
+
+			<div class="m-portlet m-portlet--tab">
+
+				<!--begin::Form-->
+				<div class="m-form m-form--fit m-form--label-align-right">
+					<div class="m-portlet__body">
+						<div class="form-group m-form__group row">
+							<label for="lbltipomaterial" class="col-2 col-form-label">
+								Tipo Material </label>
+							<div class="col-2">
+								<h:selectOneMenu id="tipoMaterial"
+									value="#{materialController.bean.tipoMaterial}"
+									converter="entityConverter"
+									styleClass="form-control select-menu form-control-height m_select2_1">
+									<f:ajax execute="@this" />
+									<f:selectItem itemLabel="" itemValue="" />
+									<f:selectItems value="#{materialController.listaTipoMaterial}"
+										itemLabel="#{tipoMaterial.nome}" itemValue="#{tipoMaterial}"
+										var="tipoMaterial"></f:selectItems>
+								</h:selectOneMenu>
+							</div>
+
+							<button type="button" data-toggle="modal"
+								data-target="#myModalTipoMaterial"
+								class="btn btn-warning btn-sm">Novo Tipo Material</button>
+						</div>
+
+						<div class="form-group m-form__group row">
+							<label for="lblmarca" class="col-2 col-form-label"> Marca
+							</label>
+							<div class="col-4">
+								<h:inputText id="marca" styleClass="col-4 form-control m-input"
+									value="#{materialController.bean.marca}" />
+							</div>
+						</div>
+
+						<div class="form-group m-form__group row">
+							<label for="lblquantidade" class="col-2 col-form-label">
+								Quantidade </label>
+							<div class="col-4">
+								<h:inputText id="quantidade"
+									styleClass="col-4 form-control m-input"
+									value="#{materialController.bean.quantidade}" />
+							</div>
+						</div>
+
+						<div class="form-group m-form__group row">
+							<label for="custo" class="col-2 col-form-label"> Custo </label>
+							<div class="col-4">
+								<h:inputText id="custo"
+									value="#{materialController.bean.valorCusto}"
+									converter="ValorMonetarioConverter"
+									styleClass="moeda col-4 form-control m-input" />
+							</div>
+						</div>
+
+						<div class="form-group m-form__group row"
+							style="background: #ebedf2">
+							<label for="lblcaracteristica" class="col-2 col-form-label">
+								Caracteristica </label>
+							<div class="col-2">
+								<h:selectOneMenu id="caracteristica" required="true"
+									requiredMessage="Tipo Característica Material é um campo obrigatório!"
+									value="#{materialController.caracteristicasMaterial.tipoCaracteristicaMaterial}"
+									converter="entityConverter"
+									styleClass="form-control select-menu form-control-height">
+									<f:ajax execute="@this" />
+									<f:selectItem itemLabel="" itemValue="" />
+									<f:selectItems
+										value="#{materialController.listaTipoCaracteristicaMaterial}"
+										itemLabel="#{tipoCarcMaterial.nome}"
+										itemValue="#{tipoCarcMaterial}" var="tipoCarcMaterial"></f:selectItems>
+								</h:selectOneMenu>
+							</div>
+						</div>
+
+						<div class="form-group m-form__group row"
+							style="background: #ebedf2">
+							<label for="lbldescricao" class="col-2 col-form-label">
+								Descrição </label>
+							<div class="col-4">
+								<h:inputTextarea style="height: 100px" id="descricao"
+									value="#{materialController.caracteristicasMaterial.descricao}"
+									styleClass="form-control m-input" />
+							</div>
+						</div>
+
+						<div class="form-group m-form__group row">
+							<label for="add" class="col-2 col-form-label"
+								style="margin-left: 15px !important"></label>
+							<p:commandLink styleClass="btn btn-primary btn-sm"
+								process="@this, caracteristica, descricao"
+								update="descricao, caracteristica, pntabela" ajax="true"
+								actionListener="#{materialController.adicionarCaracteristicaMaterial}"
+								value="Adicionar
+								Caracteristica do Material">
+							</p:commandLink>
+						</div>
+
+						<div class="form-group m-form__group row">
+							<label for="lblmarca" class="col-2 col-form-label"> </label>
+							<div class="col-6">
+								<p:dataTable id="pntabela" width="100%" 
+									emptyMessage="Nenhum registro encontrado!" rowIndexVar="rowIx"
+									value="#{materialController.bean.listaCaractMaterial}"
+									var="carac">
+									<p:column headerText="Caracteristica" style="width:200px">
+										<h:outputText
+											value="#{carac.tipoCaracteristicaMaterial.nome}" />
+									</p:column>
+									<p:column headerText="Descrição">
+   								   			<h:outputText value="#{carac.descricao}" />
+									</p:column>
+									<p:column headerText="Opções" style="width:160px; text-align:center">
+										<p:commandLink title="Editar" style="margin-right: 5px"
+											immediate="true" ajax="true" 
+											process="@this"
+											update="paginas:caracteristica, paginas:descricao"
+											class="m-portlet__nav-link btn btn-lg m-btn--hover-accent  m-btn m-btn--icon m-btn--icon-only m-btn--pill  m-dropdown__toggle">
+											<i class="la la-edit m--font-brand"></i>
+											<f:setPropertyActionListener value="#{carac}" target="#{materialController.caracteristicasMaterial}"/>
+											<f:setPropertyActionListener value="#{rowIx}" target="#{materialController.posicao}"/>
+										</p:commandLink>
+										
+										<p:commandLink title="Excluir" ajax="true"
+											process="@this" immediate="true"
+											update="@this, pntabela"
+											onclick="confirmarExclusaoDoRegistro(#{rowIx})"
+											class="m-portlet__nav-link btn btn-lg m-btn--hover-danger  m-btn m-btn--icon m-btn--icon-only m-btn--pill  m-dropdown__toggle">
+											<i class="la la-trash m--font-brand"></i>
+												<f:setPropertyActionListener value="#{carac}" target="#{materialController.caracteristicasMaterial}"/>
+												<f:setPropertyActionListener value="#{rowIx}" target="#{materialController.posicao}"/>
+										</p:commandLink>
+										
+										<p:remoteCommand id="excluirRegistro" name="excluirRegistro"
+											action="#{materialController.excluirCaracteristicaMaterial}" update="@this, pntabela, paginas:caracteristica, paginas:descricao"
+											oncomplete="showMensagem(xhr, status, args);" process="@this"></p:remoteCommand>
+									</p:column>
+								</p:dataTable>
+							</div>
+						</div>
+					</div>
+
+
+					<div class="m-portlet__foot m-portlet__foot--fit">
+						<div class="m-form__actions"
+							style="padding: 10px; padding-right: 2.2rem">
+							<div class="row">
+								<div class="col-10"></div>
+								<div class="col-2">
+
+									<p:commandLink value="Salvar"
+										oncomplete="showMensagem(xhr, status, args); configurarMoeda()"
+										process="@this, tipoMaterial, marca, quantidade, custo"
+										ajax="true"
+										update="pntabela, caracteristica, descricao, tipoMaterial, marca, quantidade, custo"
+										actionListener="#{materialController.doSaveAction}"
+										styleClass="btn btn-success" style="float: right"></p:commandLink>
+									<button type="reset" class="btn btn-secondary"
+										style="float: right">Cancel</button>
+
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+
+
+		</div>
+	</div>
+</ui:composition>
